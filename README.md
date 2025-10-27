@@ -45,7 +45,7 @@ pipx uninstall llm-cli
 ### List Models
 
 ```bash
-$ vllm --api-key=... --list-models
+$ llm --api-key=... --list-models
 babbage-002
 chatgpt-4o-latest
 codex-mini-latest
