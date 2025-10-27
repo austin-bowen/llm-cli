@@ -1,0 +1,26 @@
+[project]
+name = "llm-cli"
+version = "0.1.0"
+description = "Yet another LLM CLI command"
+readme = "README.md"
+authors = [
+    { name = "Austin Bowen", email = "austin.bowen.314@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=2.6.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "isort>=7.0.0",
+    "pytest>=8.4.2",
+]
+
+[project.scripts]
+llm = "llm_cli.main:main"
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"

@@ -1,0 +1,167 @@
+import argparse
+import traceback
+from typing import Any, Optional
+
+from openai import BadRequestError, OpenAI, OpenAIError
+
+from llm_cli.args import print_settings
+from llm_cli.utils import (
+    error_is_streaming_not_supported,
+    print_separator,
+    print_token_usage,
+)
+
+Message = dict[str, str]
+
+STOP_CHAR: str = "\x1b"
+
+
+def chat(args: argparse.Namespace, client: OpenAI) -> None:
+    system_message = get_system_message(args)
+    messages: list[Message] = [system_message] if system_message else []
+
+    print_settings(args)
+    print()
+    print("Press Alt-Enter to send message. Ctrl-C to exit.")
+
+    while True:
+        user_message = get_user_message()
+        messages.append(user_message)
+
+        try:
+            assistant_response = get_assistant_response(args, client, messages)
+        except OpenAIError:
+            traceback.print_exc()
+            messages.pop()
+            print("[Last user message dropped]")
+        else:
+            messages.append(assistant_response)
+        finally:
+            print_separator()
+
+
+def get_system_message(args: argparse.Namespace) -> Optional[Message]:
+    if args.prompt and args.prompt_file:
+        raise ValueError("Cannot specify both --prompt and --prompt-file.")
+
+    if args.prompt:
+        return dict(role="system", content=args.prompt)
+
+    if args.prompt_file:
+        with open(args.prompt_file, "r") as f:
+            return dict(role="system", content=f.read())
+
+    return None
+
+
+def get_user_message() -> Message:
+    lines = []
+    while True:
+        line = input("> " if not lines else "| ")
+        lines.append(line)
+
+        if line.endswith(STOP_CHAR):
+            lines[-1] = line[:-1]
+            break
+
+    content = "\n".join(lines)
+
+    return dict(role="user", content=content)
+
+
+def get_assistant_response(
+    args: argparse.Namespace,
+    client: OpenAI,
+    messages: list[Message],
+) -> Message:
+    request_kwargs = dict(
+        messages=messages,
+        model=args.model,
+        temperature=args.temperature,
+        frequency_penalty=args.frequency_penalty,
+        max_completion_tokens=args.max_tokens,
+        reasoning_effort=args.reasoning_effort,
+    )
+
+    if not args.no_stream:
+        try:
+            message = get_assistant_message_streaming(args, client, request_kwargs)
+        except BadRequestError as e:
+            if error_is_streaming_not_supported(e):
+                print(
+                    f"[Streaming not supported. Error message: {e.body.get('message')}]"
+                )
+                args.no_stream = True
+            else:
+                raise
+
+    if args.no_stream:
+        message = get_assistant_message_no_streaming(args, client, request_kwargs)
+
+    return dict(role="assistant", content=message)
+
+
+def get_assistant_message_streaming(
+    args: argparse.Namespace,
+    client: OpenAI,
+    request_kwargs: dict[str, Any],
+) -> str:
+    response_stream = client.chat.completions.create(
+        **request_kwargs,
+        stream=True,
+        stream_options=dict(include_usage=True),
+    )
+
+    message_chunks = []
+    print_buffer = ""
+    token_usage = None
+    print()
+    for chunk in response_stream:
+        # The last chunk should have no choices and should have the token usage
+        if not chunk.choices:
+            token_usage = chunk.usage
+            break
+
+        content = chunk.choices[0].delta.content
+        if not content:
+            continue
+
+        # Some models like to output a lot of whitespace at the end;
+        # use a buffer to avoid printing it
+        print_buffer += content
+
+        if not print_buffer.isspace():
+            print(print_buffer, end="", flush=True)
+            message_chunks.append(print_buffer)
+            print_buffer = ""
+
+    print()
+    print()
+
+    assistant_message = "".join(message_chunks)
+
+    if args.show_tokens and token_usage:
+        print_token_usage(token_usage)
+        print()
+
+    return assistant_message
+
+
+def get_assistant_message_no_streaming(
+    args: argparse.Namespace,
+    client: OpenAI,
+    request_kwargs: dict[str, Any],
+) -> str:
+    response = client.chat.completions.create(**request_kwargs)
+
+    assistant_message = response.choices[0].message.content.strip()
+
+    print()
+    print(assistant_message)
+    print()
+
+    if args.show_tokens:
+        print_token_usage(response.usage)
+        print()
+
+    return assistant_message
