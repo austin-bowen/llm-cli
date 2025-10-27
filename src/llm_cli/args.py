@@ -1,4 +1,5 @@
 import argparse
+from importlib.metadata import version as pkg_version
 
 from openai import omit
 
@@ -90,6 +91,16 @@ def parse_args() -> argparse.Namespace:
         "--no-stream",
         action="store_true",
         help="Do not stream the response.",
+    )
+
+    # Version flag should be at the end
+    version = pkg_version("llm_cli")
+    parser.add_argument(
+        "--version",
+        "-V",
+        action="version",
+        version=f"%(prog)s {version}",
+        help="Show program's version number and exit.",
     )
 
     return parser.parse_args()
