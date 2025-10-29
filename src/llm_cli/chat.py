@@ -6,12 +6,12 @@ from typing import Any, Optional
 from openai import BadRequestError, OpenAI, OpenAIError
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.key_binding import KeyBindings
 
 from llm_cli.args import print_settings
 from llm_cli.utils import (
-    bold,
     error_is_streaming_not_supported,
     print_header,
     print_token_usage,
@@ -25,8 +25,6 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
     messages: list[Message] = [system_message] if system_message else []
 
     print_settings(args)
-    print()
-    print(f"Enter inserts newline. {bold('Press Ctrl-D to send.')} Ctrl-C to exit.")
     print()
 
     while True:
@@ -62,7 +60,9 @@ def get_user_message() -> Message:
     print()
 
     session = get_prompt_session()
-    content = session.prompt().strip()
+    content = session.prompt(
+        bottom_toolbar=bottom_toolbar,
+    ).strip()
     print()
 
     return dict(role="user", content=content)
@@ -82,6 +82,15 @@ def get_prompt_session() -> PromptSession:
         auto_suggest=AutoSuggestFromHistory(),
         history=InMemoryHistory(),
         key_bindings=kb,
+    )
+
+
+def bottom_toolbar() -> HTML:
+    return HTML(
+        "<b>Enter</b> for new line | "
+        "<b>Ctrl-D to send</b> | "
+        "<b>Ctrl-C</b> to exit | "
+        "<b>Up/Down</b> for history"
     )
 
 
