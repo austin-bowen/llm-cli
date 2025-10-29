@@ -1,5 +1,6 @@
 import argparse
 import traceback
+from functools import lru_cache
 from typing import Any, Optional
 
 from openai import BadRequestError, OpenAI, OpenAIError
@@ -56,12 +57,19 @@ def get_system_message(args: argparse.Namespace) -> Optional[Message]:
     return None
 
 
-def get_user_message(
-    _history: History = InMemoryHistory(),
-) -> Message:
+def get_user_message() -> Message:
     print_header("User")
     print()
 
+    session = get_prompt_session()
+    content = session.prompt().strip()
+    print()
+
+    return dict(role="user", content=content)
+
+
+@lru_cache(maxsize=1)
+def get_prompt_session() -> PromptSession:
     kb = KeyBindings()
 
     # Ctrl-D
@@ -69,17 +77,12 @@ def get_user_message(
     def submit(event):
         event.current_buffer.validate_and_handle()
 
-    session = PromptSession(
+    return PromptSession(
         multiline=True,
         auto_suggest=AutoSuggestFromHistory(),
-        history=_history,
+        history=InMemoryHistory(),
         key_bindings=kb,
     )
-
-    content = session.prompt().strip()
-    print()
-
-    return dict(role="user", content=content)
 
 
 def get_assistant_response(
