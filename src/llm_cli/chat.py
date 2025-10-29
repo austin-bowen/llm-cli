@@ -27,18 +27,20 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
     print_settings(args)
     print()
 
+    turn = 0
     while True:
-        user_message = get_user_message()
+        user_message = get_user_message(turn)
         messages.append(user_message)
 
         try:
-            assistant_response = get_assistant_response(args, client, messages)
+            assistant_response = get_assistant_response(args, client, messages, turn)
         except OpenAIError:
             traceback.print_exc()
             messages.pop()
             print("[Last user message dropped]")
         else:
             messages.append(assistant_response)
+            turn += 1
 
 
 def get_system_message(args: argparse.Namespace) -> Optional[Message]:
@@ -55,8 +57,8 @@ def get_system_message(args: argparse.Namespace) -> Optional[Message]:
     return None
 
 
-def get_user_message() -> Message:
-    print_header("User")
+def get_user_message(turn: int) -> Message:
+    print_header(f"User [{turn}]", bar_char="=")
     print()
 
     session = get_prompt_session()
@@ -85,6 +87,7 @@ def get_prompt_session() -> PromptSession:
     )
 
 
+@lru_cache(maxsize=1)
 def bottom_toolbar() -> HTML:
     return HTML(
         "<b>Enter</b> for new line | "
@@ -98,8 +101,9 @@ def get_assistant_response(
     args: argparse.Namespace,
     client: OpenAI,
     messages: list[Message],
+    turn: int,
 ) -> Message:
-    print_header("Assistant")
+    print_header(f"Assistant [{turn}]", bar_char="-")
 
     request_kwargs = dict(
         messages=messages,
@@ -124,6 +128,8 @@ def get_assistant_response(
 
     if args.no_stream:
         message = get_assistant_message_no_streaming(args, client, request_kwargs)
+
+    print()
 
     return dict(role="assistant", content=message)
 
