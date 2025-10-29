@@ -3,17 +3,17 @@ import traceback
 from typing import Any, Optional
 
 from openai import BadRequestError, OpenAI, OpenAIError
+from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding import KeyBindings
 
 from llm_cli.args import print_settings
 from llm_cli.utils import (
     error_is_streaming_not_supported,
-    print_separator,
+    print_header,
     print_token_usage,
 )
 
 Message = dict[str, str]
-
-STOP_CHAR: str = "\x1b"
 
 
 def chat(args: argparse.Namespace, client: OpenAI) -> None:
@@ -22,7 +22,8 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
     print_settings(args)
     print()
-    print("Press Alt-Enter to send message. Ctrl-C to exit.")
+    print("Enter inserts newline. Press Ctrl-D to send. Ctrl-C to exit.")
+    print()
 
     while True:
         user_message = get_user_message()
@@ -36,8 +37,6 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
             print("[Last user message dropped]")
         else:
             messages.append(assistant_response)
-        finally:
-            print_separator()
 
 
 def get_system_message(args: argparse.Namespace) -> Optional[Message]:
@@ -55,16 +54,23 @@ def get_system_message(args: argparse.Namespace) -> Optional[Message]:
 
 
 def get_user_message() -> Message:
-    lines = []
-    while True:
-        line = input("> " if not lines else "| ")
-        lines.append(line)
+    print_header("User")
+    print()
 
-        if line.endswith(STOP_CHAR):
-            lines[-1] = line[:-1]
-            break
+    kb = KeyBindings()
 
-    content = "\n".join(lines)
+    # Ctrl-D
+    @kb.add("c-d")
+    def submit(event):
+        event.app.exit(result=event.current_buffer.text)
+
+    session = PromptSession(
+        multiline=True,
+        key_bindings=kb,
+    )
+
+    content = session.prompt().strip()
+    print()
 
     return dict(role="user", content=content)
 
@@ -74,6 +80,8 @@ def get_assistant_response(
     client: OpenAI,
     messages: list[Message],
 ) -> Message:
+    print_header("Assistant")
+
     request_kwargs = dict(
         messages=messages,
         model=args.model,

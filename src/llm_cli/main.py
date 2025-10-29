@@ -20,7 +20,7 @@ def main() -> None:
     try:
         chat(args, client)
     except KeyboardInterrupt:
-        print()
+        print("[exit]")
 
 
 if __name__ == "__main__":
