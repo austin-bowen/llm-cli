@@ -6,7 +6,7 @@ from typing import Any, Optional
 from openai import BadRequestError, OpenAI, OpenAIError
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.history import History, InMemoryHistory
+from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.key_binding import KeyBindings
 
 from llm_cli.args import print_settings
