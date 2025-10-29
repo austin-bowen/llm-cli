@@ -3,6 +3,13 @@ from math import ceil, floor
 
 from openai import BadRequestError
 
+ANSI_FORMAT_BOLD = "\033[1m"
+ANSI_FORMAT_RESET = "\033[0m"
+
+
+def bold(text: str) -> str:
+    return ANSI_FORMAT_BOLD + text + ANSI_FORMAT_RESET
+
 
 def error_is_streaming_not_supported(e: BadRequestError) -> bool:
     error_type = e.body.get("type")
@@ -25,7 +32,7 @@ def print_header(header: str, bar_char: str = "=", max_width: int = 50) -> None:
     left_bar = bar_char * left_bar_width
     right_bar = bar_char * right_bar_width
 
-    print(f"{left_bar} {header} {right_bar}")
+    print(bold(f"{left_bar} {header} {right_bar}"))
 
 
 def print_token_usage(token_usage) -> None:
