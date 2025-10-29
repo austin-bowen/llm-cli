@@ -3,7 +3,7 @@ Yet another LLM CLI command: `$ llm`
 
 `llm` provides a simple chat interface to OpenAI models, or any other models hosted behind an OpenAI-compatible API (e.g. via `vllm serve`).
 
-Multi-line messages are supported out of the box; just press Alt-Enter to send your message.
+Multi-line messages are supported out of the box; just press Ctrl-D to send your message.
 
 ### Basic Example
 
@@ -12,14 +12,19 @@ $ export OPENAI_API_KEY=...
 $ llm  # Defaults to --model=gpt-5
 model: gpt-5
 
-Press Alt-Enter to send message. Ctrl-C to exit.
-> Hello, world.<Enter>
-| How are you?<Alt-Enter>
+==================== User [0] ====================
+
+Hello, world.<Enter>
+How are you?<Ctrl-D>
+
+----------------- Assistant [0] ------------------
 
 Hi there! I’m doing well—ready to help. What’s on your mind today?
 
---------------------------------------------------
-> Your next message...█
+
+==================== User [1] ====================
+
+Your next message...█
 ```
 
 ## Installation
@@ -69,20 +74,28 @@ base-url: http://localhost:8000/v1
 model: google/gemma-3-27b-it
 temperature: 0.0
 
-Press Alt-Enter to send message. Ctrl-C to exit.
-> Hello, world.<Alt-Enter>
+==================== User [0] ====================
+
+Hello, world.<Ctrl-D>
+
+----------------- Assistant [0] ------------------
 
 Ahoy there, world! Shiver me timbers, 'tis good to be makin' yer acquaintance! ...
 
 [tokens: input=18 (0% cached); output=44; total=62]
 
---------------------------------------------------
-> How's it going?<Alt-Enter>
+
+==================== User [1] ====================
+
+How's it going?<Ctrl-D>
+
+----------------- Assistant [1] ------------------
 
 Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I do! ...
 
 [tokens: input=76 (63% cached); output=95; total=171]
 
---------------------------------------------------
-> █
+
+==================== User [2] ====================
+█
 ```
