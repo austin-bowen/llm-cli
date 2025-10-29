@@ -33,6 +33,9 @@ Your next message...█
 # Install with uv
 uv tool install git+https://github.com/austin-bowen/llm-cli.git
 
+# Upgrade to latest version
+uv tool upgrade llm-cli
+
 # Uninstall
 uv tool uninstall llm-cli
 ```
@@ -40,6 +43,9 @@ uv tool uninstall llm-cli
 ```bash
 # Install with pipx
 pipx install git+https://github.com/austin-bowen/llm-cli.git
+
+# Upgrade to latest version
+pipx upgrade llm-cli
 
 # Uninstall
 pipx uninstall llm-cli
