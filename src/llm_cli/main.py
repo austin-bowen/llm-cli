@@ -2,11 +2,16 @@ from openai import OpenAI
 
 from llm_cli.args import parse_args
 from llm_cli.chat import chat
+from llm_cli.json_schema import print_json_schema_template
 from llm_cli.list_models import list_models
 
 
 def main() -> None:
     args = parse_args()
+
+    if args.json_schema_template:
+        print_json_schema_template()
+        return
 
     client = OpenAI(
         api_key=args.api_key,

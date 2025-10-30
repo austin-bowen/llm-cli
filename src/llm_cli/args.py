@@ -59,6 +59,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--json-schema-template",
+        action="store_true",
+        help="Print a JSON schema template and exit. "
+        "Use to help create a JSON schema file.",
+    )
+
+    parser.add_argument(
         "--temperature",
         "-t",
         default=DEFAULT_TEMPERATURE,
