@@ -108,10 +108,11 @@ def get_assistant_response(
     request_kwargs = dict(
         messages=messages,
         model=args.model,
-        temperature=args.temperature,
         frequency_penalty=args.frequency_penalty,
         max_completion_tokens=args.max_tokens,
         reasoning_effort=args.reasoning_effort,
+        response_format=args.response_format,
+        temperature=args.temperature,
     )
 
     if not args.no_stream:

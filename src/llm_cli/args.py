@@ -1,7 +1,8 @@
 import argparse
+import json
 from importlib.metadata import version as pkg_version
 
-from openai import omit
+from openai import Omit, omit
 
 DEFAULT_MODEL: str = "gpt-5"
 DEFAULT_TEMPERATURE = omit
@@ -44,6 +45,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--prompt-file",
         help="The path to a file containing the system prompt.",
+    )
+
+    parser.add_argument(
+        "--json-object",
+        action="store_true",
+        help="Force model to output a JSON object.",
+    )
+
+    parser.add_argument(
+        "--json-schema-file",
+        help="The path to a file containing the JSON schema to use.",
     )
 
     parser.add_argument(
@@ -103,7 +115,29 @@ def parse_args() -> argparse.Namespace:
         help="Show program's version number and exit.",
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.response_format = get_response_format(args)
+
+    return args
+
+
+def get_response_format(args: argparse.Namespace) -> dict[str, str] | Omit:
+    if args.json_object and args.json_schema_file:
+        raise ValueError("Cannot specify both --json-object and --json-schema-file")
+
+    if args.json_object:
+        return dict(type="json_object")
+
+    if args.json_schema_file:
+        with open(args.json_schema_file) as f:
+            json_schema = json.load(f)
+
+        return dict(
+            type="json_schema",
+            json_schema=json_schema,
+        )
+
+    return omit
 
 
 def print_settings(args: argparse.Namespace) -> None:
