@@ -29,11 +29,16 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
     turn = 0
     while True:
-        user_message = get_user_message(turn)
+        print_header(f"User [{turn}]", bar_char="=")
+        print()
+        user_message = get_user_message()
         messages.append(user_message)
+        print()
 
+        print_header(f"Assistant [{turn}]", bar_char="-")
+        print()
         try:
-            assistant_response = get_assistant_response(args, client, messages, turn)
+            assistant_response = get_assistant_response(args, client, messages)
         except OpenAIError:
             traceback.print_exc()
             messages.pop()
@@ -41,6 +46,15 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
         else:
             messages.append(assistant_response)
             turn += 1
+        print()
+        print()
+
+
+def single_message(args: argparse.Namespace, client: OpenAI) -> None:
+    system_message = get_system_message(args)
+    messages = [system_message] if system_message else []
+    messages.append(dict(role="user", content=args.message))
+    get_assistant_response(args, client, messages)
 
 
 def get_system_message(args: argparse.Namespace) -> Optional[Message]:
@@ -57,15 +71,11 @@ def get_system_message(args: argparse.Namespace) -> Optional[Message]:
     return None
 
 
-def get_user_message(turn: int) -> Message:
-    print_header(f"User [{turn}]", bar_char="=")
-    print()
-
+def get_user_message() -> Message:
     session = get_prompt_session()
     content = session.prompt(
         bottom_toolbar=bottom_toolbar,
     ).strip()
-    print()
 
     return dict(role="user", content=content)
 
@@ -101,10 +111,7 @@ def get_assistant_response(
     args: argparse.Namespace,
     client: OpenAI,
     messages: list[Message],
-    turn: int,
 ) -> Message:
-    print_header(f"Assistant [{turn}]", bar_char="-")
-
     request_kwargs = dict(
         messages=messages,
         model=args.model,
@@ -123,14 +130,13 @@ def get_assistant_response(
                 print(
                     f"[Streaming not supported. Error message: {e.body.get('message')}]"
                 )
+                print()
                 args.no_stream = True
             else:
                 raise
 
     if args.no_stream:
         message = get_assistant_message_no_streaming(args, client, request_kwargs)
-
-    print()
 
     return dict(role="assistant", content=message)
 
@@ -149,7 +155,6 @@ def get_assistant_message_streaming(
     message_chunks = []
     print_buffer = ""
     token_usage = None
-    print()
     for chunk in response_stream:
         # The last chunk should have no choices and should have the token usage
         if not chunk.choices:
@@ -168,15 +173,13 @@ def get_assistant_message_streaming(
             print(print_buffer, end="", flush=True)
             message_chunks.append(print_buffer)
             print_buffer = ""
-
     print()
-    print()
-
-    assistant_message = "".join(message_chunks)
 
     if args.show_tokens and token_usage:
-        print_token_usage(token_usage)
         print()
+        print_token_usage(token_usage)
+
+    assistant_message = "".join(message_chunks)
 
     return assistant_message
 
@@ -190,12 +193,10 @@ def get_assistant_message_no_streaming(
 
     assistant_message = response.choices[0].message.content.strip()
 
-    print()
     print(assistant_message)
-    print()
 
     if args.show_tokens:
-        print_token_usage(response.usage)
         print()
+        print_token_usage(response.usage)
 
     return assistant_message

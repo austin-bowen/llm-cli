@@ -112,6 +112,18 @@ def parse_args() -> argparse.Namespace:
         help="Do not stream the response.",
     )
 
+    parser.add_argument(
+        "--message-file",
+        help="The path to a file containing the user message. "
+        "This will output the assistant's response and exit (no chat).",
+    )
+
+    parser.add_argument(
+        "message",
+        nargs="*",
+        help="The user message. This will output the assistant's response and exit (no chat).",
+    )
+
     # Version flag should be at the end
     version = pkg_version("llm_cli")
     parser.add_argument(
@@ -123,9 +135,23 @@ def parse_args() -> argparse.Namespace:
     )
 
     args = parser.parse_args()
+    args.message = get_message(args)
     args.response_format = get_response_format(args)
 
     return args
+
+
+def get_message(args: argparse.Namespace) -> str | None:
+    cli_message = " ".join(args.message)
+
+    if cli_message and args.message_file:
+        raise ValueError("Cannot provide message arg and --message-file")
+
+    if args.message_file:
+        with open(args.message_file) as f:
+            return f.read()
+
+    return cli_message or None
 
 
 def get_response_format(args: argparse.Namespace) -> dict[str, str] | Omit:

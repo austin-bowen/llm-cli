@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 from llm_cli.args import parse_args
-from llm_cli.chat import chat
+from llm_cli.chat import chat, single_message
 from llm_cli.json_schema import print_json_schema_template
 from llm_cli.list_models import list_models
 
@@ -20,6 +20,10 @@ def main() -> None:
 
     if args.list_models:
         list_models(client)
+        return
+
+    if args.message:
+        single_message(args, client)
         return
 
     try:
