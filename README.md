@@ -3,13 +3,20 @@ Yet another LLM CLI command: `$ llm`
 
 `llm` provides a simple chat interface to OpenAI models, or any other models hosted behind an OpenAI-compatible API (e.g. via `vllm serve`).
 
-Multi-line messages are supported out of the box; just press Ctrl-D to send your message.
-
-### Basic Example
+### Single Message
 
 ```bash
-$ export OPENAI_API_KEY=...
-$ llm  # Defaults to --model=gpt-5
+$ llm what is the capital of France?
+Paris.
+$ █
+```
+
+### Basic Chat
+
+Multi-line messages and copy-paste are supported out of the box; just press Ctrl-D to send your message.
+
+```bash
+$ llm
 model: gpt-5
 
 ==================== User [0] ====================
@@ -51,12 +58,25 @@ pipx upgrade llm-cli
 pipx uninstall llm-cli
 ```
 
+### Setup
+
+You will need to provide an API key, either by setting the `OPENAI_API_KEY` environment variable, or by using the `--api-key` flag:
+
+```bash
+$ export OPENAI_API_KEY=<api-key>
+$ llm
+
+OR
+
+$ llm --api-key=<api-key>
+```
+
 ## Examples
 
 ### List Models
 
 ```bash
-$ llm --api-key=... --list-models
+$ llm --list-models
 babbage-002
 chatgpt-4o-latest
 codex-mini-latest
@@ -71,7 +91,6 @@ gpt-3.5-turbo
 
 ```bash
 $ llm --base-url=http://localhost:8000/v1 \
->     --api-key=... \
 >     --model=google/gemma-3-27b-it \
 >     --temperature=0.0 \
 >     --prompt "Talk like a pirate" \
@@ -104,4 +123,47 @@ Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I d
 
 ==================== User [2] ====================
 █
+```
+
+## Usage
+
+```bash
+$ llm --help
+usage: llm [-h] [--api-key API_KEY] [--list-models] [--model MODEL] [--prompt PROMPT] [--prompt-file PROMPT_FILE] [--json-object] [--json-schema-file JSON_SCHEMA_FILE] [--json-schema-template] [--temperature TEMPERATURE]
+           [--frequency-penalty FREQUENCY_PENALTY] [--max-tokens MAX_TOKENS] [--reasoning-effort {minimal,low,medium,high}] [--base-url BASE_URL] [--show-tokens] [--no-stream] [--message-file MESSAGE_FILE] [--version]
+           [message ...]
+
+positional arguments:
+  message               The user message. This will output the assistant's response and exit (no chat).
+
+options:
+  -h, --help            show this help message and exit
+  --api-key API_KEY, -k API_KEY
+                        API key. If not given, then the `OPENAI_API_KEY` environment variable will be used.
+  --list-models, -l     List available models and exit.
+  --model MODEL, -m MODEL
+                        The model to use. Default: gpt-5
+  --prompt PROMPT, -p PROMPT
+                        The system prompt to use.
+  --prompt-file PROMPT_FILE
+                        The path to a file containing the system prompt.
+  --message-file MESSAGE_FILE
+                        The path to a file containing the user message. This will output the assistant's response and exit (no chat).
+  --json-object         Force model to output a JSON object.
+  --json-schema-file JSON_SCHEMA_FILE
+                        The path to a file containing the JSON schema to use.
+  --json-schema-template
+                        Print a JSON schema template and exit. Use to help create a JSON schema file.
+  --temperature TEMPERATURE, -t TEMPERATURE
+                        The temperature to use.
+  --frequency-penalty FREQUENCY_PENALTY
+                        The frequency penalty to use.
+  --max-tokens MAX_TOKENS
+                        The maximum number of tokens to generate per response.
+  --reasoning-effort {minimal,low,medium,high}
+                        The reasoning effort to use.
+  --base-url BASE_URL   Override the base URL for the OpenAI API.
+  --show-tokens         Show the number of tokens used.
+  --no-stream           Do not stream the response.
+  --version, -V         Show program's version number and exit.
 ```

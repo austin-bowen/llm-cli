@@ -48,6 +48,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--message-file",
+        help="The path to a file containing the user message. "
+        "This will output the assistant's response and exit (no chat).",
+    )
+
+    parser.add_argument(
         "--json-object",
         action="store_true",
         help="Force model to output a JSON object.",
@@ -110,12 +116,6 @@ def parse_args() -> argparse.Namespace:
         "--no-stream",
         action="store_true",
         help="Do not stream the response.",
-    )
-
-    parser.add_argument(
-        "--message-file",
-        help="The path to a file containing the user message. "
-        "This will output the assistant's response and exit (no chat).",
     )
 
     parser.add_argument(
