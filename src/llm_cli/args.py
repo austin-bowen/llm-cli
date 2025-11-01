@@ -1,6 +1,7 @@
 import argparse
 import json
 from importlib.metadata import version as pkg_version
+from textwrap import dedent
 
 from openai import Omit, omit
 
@@ -13,7 +14,44 @@ DEFAULT_BASE_URL = None
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=dedent(
+            """
+            Provides a simple chat interface to OpenAI models, or any other models hosted behind an OpenAI-compatible API.
+
+            Chat mode: $ %(prog)s
+
+            Single message mode: $ %(prog)s what is the capital of France?
+
+            Make sure you set the `OPENAI_API_KEY` environment variable, or use the `--api-key` flag.
+        """
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    add_api_args(parser)
+    add_input_args(parser)
+    add_model_args(parser)
+    add_output_args(parser)
+
+    version = pkg_version("llm_cli")
+    parser.add_argument(
+        "--version",
+        "-V",
+        action="version",
+        version=f"%(prog)s {version}",
+        help="Show program's version number and exit.",
+    )
+
+    args = parser.parse_args()
+    args.message = get_message(args)
+    args.response_format = get_response_format(args)
+
+    return args
+
+
+def add_api_args(parser: argparse.ArgumentParser) -> None:
+    parser = parser.add_argument_group("API")
 
     parser.add_argument(
         "--api-key",
@@ -23,18 +61,14 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--list-models",
-        "-l",
-        action="store_true",
-        help="List available models and exit.",
+        "--base-url",
+        default=DEFAULT_BASE_URL,
+        help="Override the base URL for the OpenAI API.",
     )
 
-    parser.add_argument(
-        "--model",
-        "-m",
-        default=DEFAULT_MODEL,
-        help="The model to use. Default: %(default)s",
-    )
+
+def add_input_args(parser: argparse.ArgumentParser) -> None:
+    parser = parser.add_argument_group("Input")
 
     parser.add_argument(
         "--prompt",
@@ -52,6 +86,56 @@ def parse_args() -> argparse.Namespace:
         help="The path to a file containing the user message. "
         "This will output the assistant's response and exit (no chat).",
     )
+
+    parser.add_argument(
+        "message",
+        nargs="*",
+        help="The user message. This will output the assistant's response and exit (no chat).",
+    )
+
+
+def add_model_args(parser: argparse.ArgumentParser) -> None:
+    parser = parser.add_argument_group("Model")
+
+    parser.add_argument(
+        "--model",
+        "-m",
+        default=DEFAULT_MODEL,
+        help="The model to use. Default: %(default)s",
+    )
+
+    parser.add_argument(
+        "--list-models",
+        "-l",
+        action="store_true",
+        help="List available models and exit.",
+    )
+
+    parser.add_argument(
+        "--temperature",
+        "-t",
+        default=DEFAULT_TEMPERATURE,
+        type=float,
+        help="The temperature to use.",
+    )
+
+    parser.add_argument(
+        "--frequency-penalty",
+        default=DEFAULT_FREQUENCY_PENALTY,
+        type=float,
+        help="The frequency penalty to use.",
+    )
+
+    parser.add_argument(
+        "--reasoning-effort",
+        default=DEFAULT_REASONING_EFFORT,
+        choices=["minimal", "low", "medium", "high"],
+        help="The reasoning effort to use.",
+    )
+
+
+def add_output_args(parser: argparse.ArgumentParser) -> None:
+    parser = parser.add_argument_group("Output")
 
     parser.add_argument(
         "--json-object",
@@ -72,38 +156,10 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--temperature",
-        "-t",
-        default=DEFAULT_TEMPERATURE,
-        type=float,
-        help="The temperature to use.",
-    )
-
-    parser.add_argument(
-        "--frequency-penalty",
-        default=DEFAULT_FREQUENCY_PENALTY,
-        type=float,
-        help="The frequency penalty to use.",
-    )
-
-    parser.add_argument(
         "--max-tokens",
         default=DEFAULT_MAX_TOKENS,
         type=int,
         help="The maximum number of tokens to generate per response.",
-    )
-
-    parser.add_argument(
-        "--reasoning-effort",
-        default=DEFAULT_REASONING_EFFORT,
-        choices=["minimal", "low", "medium", "high"],
-        help="The reasoning effort to use.",
-    )
-
-    parser.add_argument(
-        "--base-url",
-        default=DEFAULT_BASE_URL,
-        help="Override the base URL for the OpenAI API.",
     )
 
     parser.add_argument(
@@ -117,28 +173,6 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Do not stream the response.",
     )
-
-    parser.add_argument(
-        "message",
-        nargs="*",
-        help="The user message. This will output the assistant's response and exit (no chat).",
-    )
-
-    # Version flag should be at the end
-    version = pkg_version("llm_cli")
-    parser.add_argument(
-        "--version",
-        "-V",
-        action="version",
-        version=f"%(prog)s {version}",
-        help="Show program's version number and exit.",
-    )
-
-    args = parser.parse_args()
-    args.message = get_message(args)
-    args.response_format = get_response_format(args)
-
-    return args
 
 
 def get_message(args: argparse.Namespace) -> str | None:
