@@ -117,6 +117,7 @@ def get_assistant_response(
         model=args.model,
         frequency_penalty=args.frequency_penalty,
         max_completion_tokens=args.max_tokens,
+        presence_penalty=args.presence_penalty,
         reasoning_effort=args.reasoning_effort,
         response_format=args.response_format,
         temperature=args.temperature,

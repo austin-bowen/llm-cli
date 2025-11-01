@@ -11,6 +11,7 @@ DEFAULT_BASE_URL = None
 # Model defaults
 DEFAULT_MODEL: str = "gpt-5"
 DEFAULT_FREQUENCY_PENALTY = omit
+DEFAULT_PRESENCE_PENALTY = omit
 DEFAULT_REASONING_EFFORT = omit
 DEFAULT_TEMPERATURE = omit
 
@@ -124,6 +125,13 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
+        "--presence-penalty",
+        default=DEFAULT_PRESENCE_PENALTY,
+        type=float,
+        help="The presence penalty to use.",
+    )
+
+    parser.add_argument(
         "--reasoning-effort",
         default=DEFAULT_REASONING_EFFORT,
         choices=["minimal", "low", "medium", "high"],
@@ -224,6 +232,9 @@ def print_settings(args: argparse.Namespace) -> None:
 
     if args.frequency_penalty != DEFAULT_FREQUENCY_PENALTY:
         print(f"frequency_penalty: {args.frequency_penalty}")
+
+    if args.presence_penalty != DEFAULT_PRESENCE_PENALTY:
+        print(f"presence_penalty: {args.presence_penalty}")
 
     if args.reasoning_effort != DEFAULT_REASONING_EFFORT:
         print(f"reasoning_effort: {args.reasoning_effort}")
