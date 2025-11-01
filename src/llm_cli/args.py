@@ -121,21 +121,32 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         "--frequency-penalty",
         default=DEFAULT_FREQUENCY_PENALTY,
         type=float,
-        help="The frequency penalty to use.",
+        help="""
+            Number between -2.0 and 2.0. Default: 0.
+            Positive values penalize new tokens based on their existing frequency in the text so far,
+            decreasing the model's likelihood to repeat the same line verbatim.
+        """,
     )
 
     parser.add_argument(
         "--presence-penalty",
         default=DEFAULT_PRESENCE_PENALTY,
         type=float,
-        help="The presence penalty to use.",
+        help="""
+            Number between -2.0 and 2.0. Default: 0.
+            Positive values penalize new tokens based on whether they appear in the text so far,
+            increasing the model's likelihood to talk about new topics.
+        """,
     )
 
     parser.add_argument(
         "--reasoning-effort",
         default=DEFAULT_REASONING_EFFORT,
         choices=["minimal", "low", "medium", "high"],
-        help="The reasoning effort to use.",
+        help="""
+            Constrains effort on reasoning for reasoning models. Default: medium.
+            Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
+        """,
     )
 
     parser.add_argument(
@@ -143,7 +154,12 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         "-t",
         default=DEFAULT_TEMPERATURE,
         type=float,
-        help="The temperature to use.",
+        help="""
+            What sampling temperature to use, between 0 and 2. Default: 1.
+            Higher values like 0.8 will make the output more random,
+            while lower values like 0.2 will make it more focused and deterministic.
+            We generally recommend altering this or top_p but not both.
+        """,
     )
 
 
