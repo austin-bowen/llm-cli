@@ -5,12 +5,17 @@ from textwrap import dedent
 
 from openai import Omit, omit
 
-DEFAULT_MODEL: str = "gpt-5"
-DEFAULT_TEMPERATURE = omit
-DEFAULT_FREQUENCY_PENALTY = omit
-DEFAULT_MAX_TOKENS = omit
-DEFAULT_REASONING_EFFORT = omit
+# API defaults
 DEFAULT_BASE_URL = None
+
+# Model defaults
+DEFAULT_MODEL: str = "gpt-5"
+DEFAULT_FREQUENCY_PENALTY = omit
+DEFAULT_REASONING_EFFORT = omit
+DEFAULT_TEMPERATURE = omit
+
+# Output defaults
+DEFAULT_MAX_TOKENS = omit
 
 
 def parse_args() -> argparse.Namespace:
@@ -112,14 +117,6 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
-        "--temperature",
-        "-t",
-        default=DEFAULT_TEMPERATURE,
-        type=float,
-        help="The temperature to use.",
-    )
-
-    parser.add_argument(
         "--frequency-penalty",
         default=DEFAULT_FREQUENCY_PENALTY,
         type=float,
@@ -131,6 +128,14 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         default=DEFAULT_REASONING_EFFORT,
         choices=["minimal", "low", "medium", "high"],
         help="The reasoning effort to use.",
+    )
+
+    parser.add_argument(
+        "--temperature",
+        "-t",
+        default=DEFAULT_TEMPERATURE,
+        type=float,
+        help="The temperature to use.",
     )
 
 
@@ -208,19 +213,25 @@ def get_response_format(args: argparse.Namespace) -> dict[str, str] | Omit:
 
 
 def print_settings(args: argparse.Namespace) -> None:
+    # API settings
+
     if args.base_url != DEFAULT_BASE_URL:
         print(f"base-url: {args.base_url}")
 
-    print(f"model: {args.model}")
+    # Model settings
 
-    if args.temperature != DEFAULT_TEMPERATURE:
-        print(f"temperature: {args.temperature}")
+    print(f"model: {args.model}")
 
     if args.frequency_penalty != DEFAULT_FREQUENCY_PENALTY:
         print(f"frequency_penalty: {args.frequency_penalty}")
 
-    if args.max_tokens != DEFAULT_MAX_TOKENS:
-        print(f"max_tokens: {args.max_tokens}")
-
     if args.reasoning_effort != DEFAULT_REASONING_EFFORT:
         print(f"reasoning_effort: {args.reasoning_effort}")
+
+    if args.temperature != DEFAULT_TEMPERATURE:
+        print(f"temperature: {args.temperature}")
+
+    # Output settings
+
+    if args.max_tokens != DEFAULT_MAX_TOKENS:
+        print(f"max_tokens: {args.max_tokens}")
