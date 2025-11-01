@@ -64,8 +64,9 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--api-key",
         "-k",
-        help="API key. If not given, then the `OPENAI_API_KEY` "
-        "environment variable will be used.",
+        help="""
+            API key. If not given, then the `OPENAI_API_KEY` environment variable will be used.
+        """,
     )
 
     parser.add_argument(
@@ -202,8 +203,9 @@ def add_output_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--json-schema-template",
         action="store_true",
-        help="Print a JSON schema template and exit. "
-        "Use to help create a JSON schema file.",
+        help="""
+            Print a JSON schema template and exit. Use to help create a JSON schema file.
+        """,
     )
 
     parser.add_argument(

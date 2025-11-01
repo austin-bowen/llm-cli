@@ -125,45 +125,36 @@ Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I d
 █
 ```
 
-## Usage
+## Usage (Condensed)
 
 ```bash
 $ llm --help
-usage: llm [-h] [--api-key API_KEY] [--list-models] [--model MODEL] [--prompt PROMPT] [--prompt-file PROMPT_FILE] [--json-object] [--json-schema-file JSON_SCHEMA_FILE] [--json-schema-template] [--temperature TEMPERATURE]
-           [--frequency-penalty FREQUENCY_PENALTY] [--max-tokens MAX_TOKENS] [--reasoning-effort {minimal,low,medium,high}] [--base-url BASE_URL] [--show-tokens] [--no-stream] [--message-file MESSAGE_FILE] [--version]
-           [message ...]
+usage: llm [message]
 
-positional arguments:
-  message               The user message. This will output the assistant's response and exit (no chat).
+API:
+  --api-key API_KEY
+  --base-url BASE_URL
+  --service-tier {auto,default,flex,priority}
 
-options:
-  -h, --help            show this help message and exit
-  --api-key API_KEY, -k API_KEY
-                        API key. If not given, then the `OPENAI_API_KEY` environment variable will be used.
-  --list-models, -l     List available models and exit.
-  --model MODEL, -m MODEL
-                        The model to use. Default: gpt-5
-  --prompt PROMPT, -p PROMPT
-                        The system prompt to use.
+Input:
+  --prompt PROMPT
   --prompt-file PROMPT_FILE
-                        The path to a file containing the system prompt.
   --message-file MESSAGE_FILE
-                        The path to a file containing the user message. This will output the assistant's response and exit (no chat).
-  --json-object         Force model to output a JSON object.
-  --json-schema-file JSON_SCHEMA_FILE
-                        The path to a file containing the JSON schema to use.
-  --json-schema-template
-                        Print a JSON schema template and exit. Use to help create a JSON schema file.
-  --temperature TEMPERATURE, -t TEMPERATURE
-                        The temperature to use.
+
+Model:
+  --model MODEL
+  --list-models
   --frequency-penalty FREQUENCY_PENALTY
-                        The frequency penalty to use.
-  --max-tokens MAX_TOKENS
-                        The maximum number of tokens to generate per response.
+  --presence-penalty PRESENCE_PENALTY
   --reasoning-effort {minimal,low,medium,high}
-                        The reasoning effort to use.
-  --base-url BASE_URL   Override the base URL for the OpenAI API.
-  --show-tokens         Show the number of tokens used.
-  --no-stream           Do not stream the response.
-  --version, -V         Show program's version number and exit.
+  --temperature TEMPERATURE
+  --top-p TOP_P
+
+Output:
+  --json-object
+  --json-schema-file JSON_SCHEMA_FILE
+  --json-schema-template
+  --max-tokens MAX_TOKENS
+  --show-tokens
+  --no-stream
 ```
