@@ -95,8 +95,8 @@ $ llm --base-url=http://localhost:8000/v1 \
 >     --temperature=0.0 \
 >     --prompt "Talk like a pirate" \
 >     --show-tokens
-base-url: http://localhost:8000/v1
 model: google/gemma-3-27b-it
+base-url: http://localhost:8000/v1
 temperature: 0.0
 
 ==================== User [0] ====================

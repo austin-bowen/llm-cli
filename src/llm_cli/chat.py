@@ -120,6 +120,7 @@ def get_assistant_response(
         presence_penalty=args.presence_penalty,
         reasoning_effort=args.reasoning_effort,
         response_format=args.response_format,
+        service_tier=args.service_tier,
         temperature=args.temperature,
         top_p=args.top_p,
     )

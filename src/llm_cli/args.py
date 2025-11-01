@@ -7,6 +7,7 @@ from openai import Omit, omit
 
 # API defaults
 DEFAULT_BASE_URL = None
+DEFAULT_SERVICE_TIER = omit
 
 # Model defaults
 DEFAULT_MODEL: str = "gpt-5"
@@ -71,6 +72,13 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
         "--base-url",
         default=DEFAULT_BASE_URL,
         help="Override the base URL for the OpenAI API.",
+    )
+
+    parser.add_argument(
+        "--service-tier",
+        default=DEFAULT_SERVICE_TIER,
+        choices=("auto", "default", "flex", "priority"),
+        help="Specifies the processing type used for serving the request. Default: auto.",
     )
 
 
@@ -177,7 +185,6 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
     )
 
 
-
 def add_output_args(parser: argparse.ArgumentParser) -> None:
     parser = parser.add_argument_group("Output")
 
@@ -252,14 +259,17 @@ def get_response_format(args: argparse.Namespace) -> dict[str, str] | Omit:
 
 
 def print_settings(args: argparse.Namespace) -> None:
+    print(f"model: {args.model}")
+
     # API settings
 
     if args.base_url != DEFAULT_BASE_URL:
         print(f"base-url: {args.base_url}")
 
-    # Model settings
+    if args.service_tier != DEFAULT_SERVICE_TIER:
+        print(f"service-tier: {args.service_tier}")
 
-    print(f"model: {args.model}")
+    # Model settings
 
     if args.frequency_penalty != DEFAULT_FREQUENCY_PENALTY:
         print(f"frequency_penalty: {args.frequency_penalty}")
