@@ -121,6 +121,7 @@ def get_assistant_response(
         reasoning_effort=args.reasoning_effort,
         response_format=args.response_format,
         temperature=args.temperature,
+        top_p=args.top_p,
     )
 
     if not args.no_stream:

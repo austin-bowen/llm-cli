@@ -14,6 +14,7 @@ DEFAULT_FREQUENCY_PENALTY = omit
 DEFAULT_PRESENCE_PENALTY = omit
 DEFAULT_REASONING_EFFORT = omit
 DEFAULT_TEMPERATURE = omit
+DEFAULT_TOP_P = omit
 
 # Output defaults
 DEFAULT_MAX_TOKENS = omit
@@ -162,6 +163,20 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         """,
     )
 
+    parser.add_argument(
+        "--top-p",
+        default=DEFAULT_TOP_P,
+        type=float,
+        help="""
+            An alternative to sampling with temperature, called nucleus sampling,
+            where the model considers the results of the tokens with top_p probability mass.
+            So 0.1 means only the tokens comprising the top 10%% probability mass are considered.
+
+            We generally recommend altering this or temperature but not both.
+        """,
+    )
+
+
 
 def add_output_args(parser: argparse.ArgumentParser) -> None:
     parser = parser.add_argument_group("Output")
@@ -257,6 +272,9 @@ def print_settings(args: argparse.Namespace) -> None:
 
     if args.temperature != DEFAULT_TEMPERATURE:
         print(f"temperature: {args.temperature}")
+
+    if args.top_p != DEFAULT_TOP_P:
+        print(f"top_p: {args.top_p}")
 
     # Output settings
 
