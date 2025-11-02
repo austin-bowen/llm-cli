@@ -1,28 +1,33 @@
 # llm-cli
-Yet another LLM CLI command: `$ llm`
+Yet another LLM CLI command: `llm`
 
-`llm` provides a simple chat interface to OpenAI models, or any other models hosted behind an OpenAI-compatible API (e.g. via `vllm serve`).
+`llm` provides a simple chat interface for OpenAI models, or any other models hosted behind an OpenAI-compatible API (e.g. via `vllm serve`).
+
+**Chat features:**
+- Multi-line messages
+- Copy-paste
+- Undo previous messages
+- Message history
+- Streaming responses
 
 ### Single Message
 
-```bash
+```
 $ llm what is the capital of France?
 Paris.
 $ █
 ```
 
-### Basic Chat
+### Chat
 
-Multi-line messages and copy-paste are supported out of the box; just press Ctrl-D to send your message.
-
-```bash
+```
 $ llm
 model: gpt-5
 
 ==================== User [1] ====================
 
-Hello, world.<Enter>
-How are you?<Ctrl-D>
+Hello, world.
+How are you?
 
 ----------------- Assistant [1] ------------------
 
@@ -32,6 +37,7 @@ Hi there! I’m doing well—ready to help. What’s on your mind today?
 ==================== User [2] ====================
 
 Your next message...█
+Enter new line | Ctrl-D send | Ctrl-C exit | Ctrl-U undo | ↕ history
 ```
 
 ## Installation
@@ -71,11 +77,11 @@ OR
 $ llm --api-key=<api-key>
 ```
 
-## Examples
+## More Examples
 
 ### List Models
 
-```bash
+```
 $ llm --list-models
 babbage-002
 chatgpt-4o-latest
@@ -89,7 +95,7 @@ gpt-3.5-turbo
 
 ### Advanced / Self-hosted
 
-```bash
+```
 $ llm --base-url=http://localhost:8000/v1 \
 >     --model=google/gemma-3-27b-it \
 >     --temperature=0.0 \
@@ -101,7 +107,7 @@ temperature: 0.0
 
 ==================== User [1] ====================
 
-Hello, world.<Ctrl-D>
+Hello, world.
 
 ----------------- Assistant [1] ------------------
 
@@ -112,7 +118,7 @@ Ahoy there, world! Shiver me timbers, 'tis good to be makin' yer acquaintance! .
 
 ==================== User [2] ====================
 
-How's it going?<Ctrl-D>
+How's it going?
 
 ----------------- Assistant [2] ------------------
 
@@ -122,7 +128,9 @@ Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I d
 
 
 ==================== User [3] ====================
+
 █
+Enter new line | Ctrl-D send | Ctrl-C exit | Ctrl-U undo | ↕ history
 ```
 
 ## Usage (Condensed)
