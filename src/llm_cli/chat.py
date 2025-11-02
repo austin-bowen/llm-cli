@@ -92,8 +92,6 @@ def get_user_message() -> Message:
         bottom_toolbar=bottom_toolbar,
     ).strip()
 
-    print(repr(content))
-
     return dict(role="user", content=content)
 
 
@@ -109,6 +107,10 @@ def get_prompt_session() -> PromptSession:
     # Ctrl-U
     @kb.add("c-u")
     def undo(event):
+        # Add any in-progress text to history
+        if event.current_buffer.text.strip():
+            event.current_buffer.append_to_history()
+
         event.app.exit(exception=UndoCommand())
 
     return PromptSession(
