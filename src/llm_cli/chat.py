@@ -33,7 +33,7 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
         # User turn
 
-        print_header(f"User [{turn}]", bar_char="=")
+        print_header(f"👤 User [{turn}]", bar_char="=")
         print()
         try:
             user_message = get_user_message()
@@ -51,7 +51,7 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
         # Assistant turn
 
-        print_header(f"Assistant [{turn}]", bar_char="-")
+        print_header(f"🤖 Assistant [{turn}]", bar_char="-")
         print()
         try:
             assistant_response = get_assistant_response(args, client, messages)
