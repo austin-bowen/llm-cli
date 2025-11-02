@@ -13,6 +13,7 @@ from prompt_toolkit.key_binding import KeyBindings
 from llm_cli.args import print_settings
 from llm_cli.utils import (
     error_is_streaming_not_supported,
+    get_term_width,
     print_header,
     print_token_usage,
 )
@@ -118,14 +119,33 @@ def get_prompt_session() -> PromptSession:
     )
 
 
-@lru_cache(maxsize=1)
 def bottom_toolbar() -> HTML:
+    term_width = get_term_width()
+    return (
+        bottom_toolbar_long()
+        if term_width >= bottom_toolbar_long.width
+        else bottom_toolbar_short()
+    )
+
+
+@lru_cache(maxsize=1)
+def bottom_toolbar_long() -> HTML:
     return HTML(
-        "<b>Enter</b> for new line | "
-        "<b>Ctrl-D to send</b> | "
-        "<b>Ctrl-C</b> to exit | "
-        "<b>Ctrl-U</b> to undo | "
-        "<b>Up/Down</b> for history"
+        "<b>Enter</b> new line | "
+        "<b>Ctrl-D</b> send | "
+        "<b>Ctrl-C</b> exit | "
+        "<b>Ctrl-U</b> undo | "
+        "<b>↕</b> history"
+    )
+
+
+bottom_toolbar_long.width = 68
+
+
+@lru_cache(maxsize=1)
+def bottom_toolbar_short() -> HTML:
+    return HTML(
+        "<b>^D</b> send | " "<b>^C</b> exit | " "<b>^U</b> undo | " "<b>↕</b> history"
     )
 
 
