@@ -55,8 +55,13 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
         print()
         try:
             assistant_response = get_assistant_response(args, client, messages)
-        except OpenAIError:
-            traceback.print_exc()
+        except (KeyboardInterrupt, OpenAIError) as e:
+            print()
+            if isinstance(e, KeyboardInterrupt):
+                print("[Stopped]")
+            else:
+                traceback.print_exc()
+
             messages.pop()
             print("[Last message dropped]")
         else:
@@ -130,18 +135,18 @@ def bottom_toolbar() -> HTML:
     )
 
 
-BOTTOM_TOOLBAR_LONG_WIDTH = 68
+BOTTOM_TOOLBAR_LONG_WIDTH = 73
 
 BOTTOM_TOOLBAR_LONG = HTML(
     "<b>Enter</b> new line | "
     "<b>Ctrl-D</b> send | "
-    "<b>Ctrl-C</b> exit | "
+    "<b>Ctrl-C</b> stop/exit | "
     "<b>Ctrl-U</b> undo | "
     "<b>↕</b> history"
 )
 
 BOTTOM_TOOLBAR_SHORT = HTML(
-    "<b>^D</b> send | <b>^C</b> exit | <b>^U</b> undo | <b>↕</b> history"
+    "<b>^D</b> send | <b>^C</b> stop/exit | <b>^U</b> undo | <b>↕</b> history"
 )
 
 

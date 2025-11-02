@@ -23,13 +23,17 @@ def main() -> None:
         return
 
     if args.message:
-        single_message(args, client)
+        try:
+            single_message(args, client)
+        except KeyboardInterrupt:
+            print()
+            print("[Stopped]")
         return
 
     try:
         chat(args, client)
     except KeyboardInterrupt:
-        print("[exit]")
+        print("[Exit]")
 
 
 if __name__ == "__main__":

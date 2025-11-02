@@ -50,7 +50,7 @@ def print_token_usage(token_usage) -> None:
     total_tokens = input_tokens + output_tokens
 
     print(
-        f"[tokens: "
+        f"[Tokens: "
         f"input={input_tokens} ({cached_input_tokens_percent}% cached); "
         f"output={output_tokens}; "
         f"total={total_tokens}]"
