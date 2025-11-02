@@ -122,31 +122,25 @@ def get_prompt_session() -> PromptSession:
 def bottom_toolbar() -> HTML:
     term_width = get_term_width()
     return (
-        bottom_toolbar_long()
-        if term_width >= bottom_toolbar_long.width
-        else bottom_toolbar_short()
+        BOTTOM_TOOLBAR_LONG
+        if term_width >= BOTTOM_TOOLBAR_LONG_WIDTH
+        else BOTTOM_TOOLBAR_SHORT
     )
 
 
-@lru_cache(maxsize=1)
-def bottom_toolbar_long() -> HTML:
-    return HTML(
-        "<b>Enter</b> new line | "
-        "<b>Ctrl-D</b> send | "
-        "<b>Ctrl-C</b> exit | "
-        "<b>Ctrl-U</b> undo | "
-        "<b>↕</b> history"
-    )
+BOTTOM_TOOLBAR_LONG_WIDTH = 68
 
+BOTTOM_TOOLBAR_LONG = HTML(
+    "<b>Enter</b> new line | "
+    "<b>Ctrl-D</b> send | "
+    "<b>Ctrl-C</b> exit | "
+    "<b>Ctrl-U</b> undo | "
+    "<b>↕</b> history"
+)
 
-bottom_toolbar_long.width = 68
-
-
-@lru_cache(maxsize=1)
-def bottom_toolbar_short() -> HTML:
-    return HTML(
-        "<b>^D</b> send | " "<b>^C</b> exit | " "<b>^U</b> undo | " "<b>↕</b> history"
-    )
+BOTTOM_TOOLBAR_SHORT = HTML(
+    "<b>^D</b> send | <b>^C</b> exit | <b>^U</b> undo | <b>↕</b> history"
+)
 
 
 class UndoCommand(Exception):
