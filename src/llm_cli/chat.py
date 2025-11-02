@@ -27,13 +27,28 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
     print_settings(args)
     print()
 
-    turn = 0
     while True:
+        turn = 1 + len(messages) // 2
+
+        # User turn
+
         print_header(f"User [{turn}]", bar_char="=")
         print()
-        user_message = get_user_message()
+        try:
+            user_message = get_user_message()
+        except UndoCommand:
+            if messages:
+                messages.pop()
+                messages.pop()
+                print("[Last message dropped]")
+            else:
+                print("[No messages to drop]")
+            print()
+            continue
         messages.append(user_message)
         print()
+
+        # Assistant turn
 
         print_header(f"Assistant [{turn}]", bar_char="-")
         print()
@@ -42,10 +57,9 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
         except OpenAIError:
             traceback.print_exc()
             messages.pop()
-            print("[Last user message dropped]")
+            print("[Last message dropped]")
         else:
             messages.append(assistant_response)
-            turn += 1
         print()
         print()
 
@@ -77,6 +91,8 @@ def get_user_message() -> Message:
         bottom_toolbar=bottom_toolbar,
     ).strip()
 
+    print(repr(content))
+
     return dict(role="user", content=content)
 
 
@@ -88,6 +104,11 @@ def get_prompt_session() -> PromptSession:
     @kb.add("c-d")
     def submit(event):
         event.current_buffer.validate_and_handle()
+
+    # Ctrl-U
+    @kb.add("c-u")
+    def undo(event):
+        event.app.exit(exception=UndoCommand())
 
     return PromptSession(
         multiline=True,
@@ -103,8 +124,13 @@ def bottom_toolbar() -> HTML:
         "<b>Enter</b> for new line | "
         "<b>Ctrl-D to send</b> | "
         "<b>Ctrl-C</b> to exit | "
+        "<b>Ctrl-U</b> to undo | "
         "<b>Up/Down</b> for history"
     )
+
+
+class UndoCommand(Exception):
+    pass
 
 
 def get_assistant_response(
