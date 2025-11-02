@@ -37,7 +37,7 @@ Hi there! I’m doing well—ready to help. What’s on your mind today?
 ==================== User [2] ====================
 
 Your next message...█
-Enter new line | Ctrl-D send | Ctrl-C exit | Ctrl-U undo | ↕ history
+Enter new line | Ctrl-D send | Ctrl-C stop/exit | Ctrl-U undo | ↕ history
 ```
 
 ## Installation
@@ -130,7 +130,7 @@ Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I d
 ==================== User [3] ====================
 
 █
-Enter new line | Ctrl-D send | Ctrl-C exit | Ctrl-U undo | ↕ history
+Enter new line | Ctrl-D send | Ctrl-C stop/exit | Ctrl-U undo | ↕ history
 ```
 
 ## Usage (Condensed)
