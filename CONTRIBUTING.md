@@ -17,3 +17,9 @@ uv lock --upgrade && uv sync
 ```bash
 isort . ; black .
 ```
+
+# Bumping version
+
+```bash
+uv version --bump <major|minor|patch>
+```
