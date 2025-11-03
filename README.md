@@ -24,17 +24,17 @@ $ █
 $ llm
 model: gpt-5
 
-==================== 👤 User [1] ====================
+=================== 👤 User [1] ===================
 
 Hello, world.
 How are you?
 
------------------ 🤖 Assistant [1] ------------------
+---------------- 🤖 Assistant [1] -----------------
 
 Hi there! I’m doing well—ready to help. What’s on your mind today?
 
 
-==================== 👤 User [2] ====================
+=================== 👤 User [2] ===================
 
 Your next message...█
 Enter new line | Ctrl-D send | Ctrl-C stop/exit | Ctrl-U undo | ↕ history
@@ -105,29 +105,29 @@ model: google/gemma-3-27b-it
 base-url: http://localhost:8000/v1
 temperature: 0.0
 
-==================== 👤 User [1] ====================
+=================== 👤 User [1] ===================
 
 Hello, world.
 
------------------ 🤖 Assistant [1] ------------------
+---------------- 🤖 Assistant [1] -----------------
 
 Ahoy there, world! Shiver me timbers, 'tis good to be makin' yer acquaintance! ...
 
 [tokens: input=18 (0% cached); output=44; total=62]
 
 
-==================== 👤 User [2] ====================
+=================== 👤 User [2] ===================
 
 How's it going?
 
------------------ 🤖 Assistant [2] ------------------
+---------------- 🤖 Assistant [2] -----------------
 
 Avast ye! How's it goin', ye ask? Well, I be havin' a right fine time o' it, I do! ...
 
 [tokens: input=76 (63% cached); output=95; total=171]
 
 
-==================== 👤 User [3] ====================
+=================== 👤 User [3] ===================
 
 █
 Enter new line | Ctrl-D send | Ctrl-C stop/exit | Ctrl-U undo | ↕ history
