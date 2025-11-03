@@ -1,5 +1,7 @@
 import argparse
 import json
+import random
+import string
 from importlib.metadata import version as pkg_version
 from textwrap import dedent
 
@@ -76,11 +78,25 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
+        "--prompt-cache-key",
+        default=get_default_prompt_cache_key(),
+        help="""
+            Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. 
+            Defaults to a random string unique to the chat session.
+        """,
+    )
+
+    parser.add_argument(
         "--service-tier",
         default=DEFAULT_SERVICE_TIER,
         choices=("auto", "default", "flex", "priority"),
         help="Specifies the processing type used for serving the request. Default: auto.",
     )
+
+
+def get_default_prompt_cache_key() -> str:
+    """Generate a random 8-character string for the prompt cache key."""
+    return "".join(random.choices(string.ascii_letters + string.digits, k=8))
 
 
 def add_input_args(parser: argparse.ArgumentParser) -> None:
