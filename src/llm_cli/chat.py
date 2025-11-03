@@ -1,6 +1,7 @@
 import argparse
 import traceback
 from functools import lru_cache
+from textwrap import shorten
 from typing import Any, Optional
 
 from openai import BadRequestError, OpenAI, OpenAIError
@@ -42,6 +43,7 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
                 messages.pop()
                 messages.pop()
                 print("[Last message dropped]")
+                print_last_message(messages)
             else:
                 print("[No messages to drop]")
             print()
@@ -64,6 +66,7 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
             messages.pop()
             print("[Last message dropped]")
+            print_last_message(messages)
         else:
             messages.append(assistant_response)
         print()
@@ -152,6 +155,19 @@ BOTTOM_TOOLBAR_SHORT = HTML(
 
 class UndoCommand(Exception):
     pass
+
+
+def print_last_message(messages: list[Message]) -> None:
+    if not messages:
+        return
+
+    message = messages[-2]
+    assert message["role"] == "user", message["role"]
+
+    message = message["content"].replace("\n", " ")
+    message = shorten(message, width=50, placeholder=" ...")
+
+    print(f'[Last message is now: "{message}"]')
 
 
 def get_assistant_response(
