@@ -39,11 +39,11 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
         try:
             user_message = get_user_message()
         except UndoCommand:
-            if messages:
+            if len(messages) >= 2:
                 messages.pop()
                 messages.pop()
                 print("[Last message dropped]")
-                print_last_message(messages)
+                print_last_user_message(messages)
             else:
                 print("[No messages to drop]")
             print()
@@ -66,7 +66,7 @@ def chat(args: argparse.Namespace, client: OpenAI) -> None:
 
             messages.pop()
             print("[Last message dropped]")
-            print_last_message(messages)
+            print_last_user_message(messages)
         else:
             messages.append(assistant_response)
         print()
@@ -157,12 +157,12 @@ class UndoCommand(Exception):
     pass
 
 
-def print_last_message(messages: list[Message]) -> None:
-    if not messages:
+def print_last_user_message(messages: list[Message]) -> None:
+    messages = reversed(messages)
+    messages = filter(lambda m: m["role"] == "user", messages)
+    message = next(messages, None)
+    if message is None:
         return
-
-    message = messages[-2]
-    assert message["role"] == "user", message["role"]
 
     message = message["content"].replace("\n", " ")
     message = shorten(message, width=50, placeholder=" ...")
