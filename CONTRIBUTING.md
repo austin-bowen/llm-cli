@@ -15,7 +15,7 @@ uv lock --upgrade && uv sync
 # Linting and Formatting
 
 ```bash
-isort . ; black .
+./bin/format
 ```
 
 # Bumping version
