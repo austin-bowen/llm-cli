@@ -142,6 +142,7 @@ usage: llm [message]
 API:
   --api-key API_KEY
   --base-url BASE_URL
+  --headers HEADER=VALUE [HEADER=VALUE ...]
   --prompt-cache-key PROMPT_CACHE_KEY
   --service-tier {auto,default,flex,priority}
 

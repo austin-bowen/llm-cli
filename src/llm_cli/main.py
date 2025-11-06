@@ -16,6 +16,7 @@ def main() -> None:
     client = OpenAI(
         api_key=args.api_key,
         base_url=args.base_url,
+        default_headers=args.headers or None,
     )
 
     if args.list_models:

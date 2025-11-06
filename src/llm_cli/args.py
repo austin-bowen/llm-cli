@@ -54,8 +54,10 @@ def parse_args() -> argparse.Namespace:
     )
 
     args = parser.parse_args()
+
     args.message = get_message(args)
     args.response_format = get_response_format(args)
+    args.headers = dict(item for items in args.headers for item in items)
 
     return args
 
@@ -77,6 +79,21 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
         help="Override the base URL for the OpenAI API.",
     )
 
+    # This will be of the type: list[list[tuple[str, str]]]
+    parser.add_argument(
+        "--headers",
+        "-H",
+        action="append",
+        nargs="+",
+        default=[],
+        type=header_arg,
+        metavar="HEADER=VALUE",
+        help="""
+            Custom HTTP headers to include in API requests. Can be specified multiple times.
+            Format: 'Header-Name=value'
+        """,
+    )
+
     parser.add_argument(
         "--prompt-cache-key",
         default=get_default_prompt_cache_key(),
@@ -92,6 +109,17 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
         choices=("auto", "default", "flex", "priority"),
         help="Specifies the processing type used for serving the request. Default: auto.",
     )
+
+
+def header_arg(value: str) -> tuple[str, str]:
+    """Parse a header argument in the format 'header=value'."""
+    try:
+        header, value = value.split("=", 1)
+        return header.strip(), value.strip()
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(
+            f"Header must be in the format 'header=value', got '{value}'"
+        ) from e
 
 
 def get_default_prompt_cache_key() -> str:
