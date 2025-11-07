@@ -12,6 +12,7 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.key_binding import KeyBindings
 
 from llm_cli.args import print_settings
+from llm_cli.spinner import optional_spinner
 from llm_cli.utils import (
     error_is_streaming_not_supported,
     get_term_width,
@@ -77,7 +78,7 @@ def single_message(args: argparse.Namespace, client: OpenAI) -> None:
     system_message = get_system_message(args)
     messages = [system_message] if system_message else []
     messages.append(dict(role="user", content=args.message))
-    get_assistant_response(args, client, messages)
+    get_assistant_response(args, client, messages, use_spinner=False)
 
 
 def get_system_message(args: argparse.Namespace) -> Optional[Message]:
@@ -174,6 +175,7 @@ def get_assistant_response(
     args: argparse.Namespace,
     client: OpenAI,
     messages: list[Message],
+    use_spinner: bool = True,
 ) -> Message:
     request_kwargs = dict(
         messages=messages,
@@ -191,7 +193,12 @@ def get_assistant_response(
 
     if not args.no_stream:
         try:
-            message = get_assistant_message_streaming(args, client, request_kwargs)
+            message = get_assistant_message_streaming(
+                args,
+                client,
+                request_kwargs,
+                use_spinner,
+            )
         except BadRequestError as e:
             if error_is_streaming_not_supported(e):
                 print(
@@ -203,7 +210,12 @@ def get_assistant_response(
                 raise
 
     if args.no_stream:
-        message = get_assistant_message_no_streaming(args, client, request_kwargs)
+        message = get_assistant_message_no_streaming(
+            args,
+            client,
+            request_kwargs,
+            use_spinner,
+        )
 
     return dict(role="assistant", content=message)
 
@@ -212,12 +224,14 @@ def get_assistant_message_streaming(
     args: argparse.Namespace,
     client: OpenAI,
     request_kwargs: dict[str, Any],
+    use_spinner: bool,
 ) -> str:
-    response_stream = client.chat.completions.create(
-        **request_kwargs,
-        stream=True,
-        stream_options=dict(include_usage=True),
-    )
+    with optional_spinner(use_spinner):
+        response_stream = client.chat.completions.create(
+            **request_kwargs,
+            stream=True,
+            stream_options=dict(include_usage=True),
+        )
 
     message_chunks = []
     print_buffer = ""
@@ -255,8 +269,10 @@ def get_assistant_message_no_streaming(
     args: argparse.Namespace,
     client: OpenAI,
     request_kwargs: dict[str, Any],
+    use_spinner: bool,
 ) -> str:
-    response = client.chat.completions.create(**request_kwargs)
+    with optional_spinner(use_spinner):
+        response = client.chat.completions.create(**request_kwargs)
 
     assistant_message = response.choices[0].message.content.strip()
 

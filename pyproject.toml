@@ -12,6 +12,7 @@ license-files = ["LICENSE"]
 dependencies = [
     "openai>=2.6.1",
     "prompt-toolkit>=3.0.52",
+    "yaspin>=3.3.0",
 ]
 
 [dependency-groups]
