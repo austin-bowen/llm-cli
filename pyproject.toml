@@ -17,6 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "asciinema>=2.4.0",
     "black>=25.9.0",
     "isort>=7.0.0",
     "pytest>=8.4.2",
