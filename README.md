@@ -20,6 +20,8 @@ $ █
 
 ### Chat
 
+![demo](imgs/demo1.gif)
+
 ```
 $ llm
 model: gpt-5
