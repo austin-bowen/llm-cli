@@ -196,9 +196,9 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--reasoning-effort",
         default=DEFAULT_REASONING_EFFORT,
-        choices=["minimal", "low", "medium", "high"],
+        choices=["none", "minimal", "low", "medium", "high"],
         help="""
-            Constrains effort on reasoning for reasoning models. Default: medium.
+            Constrains effort on reasoning for reasoning models.
             Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
         """,
     )
