@@ -22,7 +22,7 @@ $ █
 
 ```
 $ llm
-model: gpt-5
+model: gpt-5.1
 
 =================== 👤 User [1] ===================
 
@@ -156,7 +156,8 @@ Model:
   --list-models
   --frequency-penalty FREQUENCY_PENALTY
   --presence-penalty PRESENCE_PENALTY
-  --reasoning-effort {minimal,low,medium,high}
+  --reasoning-effort {none,minimal,low,medium,high}
+  --prompt-cache-retention {in-memory,24h}
   --temperature TEMPERATURE
   --top-p TOP_P
 

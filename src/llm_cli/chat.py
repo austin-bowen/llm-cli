@@ -184,6 +184,7 @@ def get_assistant_response(
         max_completion_tokens=args.max_tokens,
         presence_penalty=args.presence_penalty,
         prompt_cache_key=args.prompt_cache_key,
+        prompt_cache_retention=args.prompt_cache_retention,
         reasoning_effort=args.reasoning_effort,
         response_format=args.response_format,
         service_tier=args.service_tier,

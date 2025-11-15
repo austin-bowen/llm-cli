@@ -104,6 +104,16 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
     )
 
     parser.add_argument(
+        "--prompt-cache-retention",
+        default=omit,
+        choices=("in-memory", "24h"),
+        help="""
+            The retention policy for the prompt cache. Set to 24h to enable extended prompt caching,
+            which keeps cached prefixes active for longer, up to a maximum of 24 hours.
+        """,
+    )
+
+    parser.add_argument(
         "--service-tier",
         default=DEFAULT_SERVICE_TIER,
         choices=("auto", "default", "flex", "priority"),
