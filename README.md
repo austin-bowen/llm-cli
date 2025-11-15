@@ -157,7 +157,7 @@ Model:
   --frequency-penalty FREQUENCY_PENALTY
   --presence-penalty PRESENCE_PENALTY
   --reasoning-effort {none,minimal,low,medium,high}
-  --prompt-cache-retention {in-memory,24h}
+  --prompt-cache-retention {in_memory,24h}
   --temperature TEMPERATURE
   --top-p TOP_P
 

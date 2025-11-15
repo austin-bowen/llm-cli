@@ -16,6 +16,7 @@ DEFAULT_MODEL: str = "gpt-5.1"
 DEFAULT_FREQUENCY_PENALTY = omit
 DEFAULT_PRESENCE_PENALTY = omit
 DEFAULT_REASONING_EFFORT = omit
+DEFAULT_PROMPT_CACHE_RETENTION = omit
 DEFAULT_TEMPERATURE = omit
 DEFAULT_TOP_P = omit
 
@@ -106,7 +107,7 @@ def add_api_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--prompt-cache-retention",
         default=omit,
-        choices=("in-memory", "24h"),
+        choices=("in_memory", "24h"),
         help="""
             The retention policy for the prompt cache. Set to 24h to enable extended prompt caching,
             which keeps cached prefixes active for longer, up to a maximum of 24 hours.
@@ -335,6 +336,9 @@ def print_settings(args: argparse.Namespace) -> None:
 
     if args.reasoning_effort != DEFAULT_REASONING_EFFORT:
         print(f"reasoning_effort: {args.reasoning_effort}")
+
+    if args.prompt_cache_retention != DEFAULT_PROMPT_CACHE_RETENTION:
+        print(f"prompt_cache_retention: {args.prompt_cache_retention}")
 
     if args.temperature != DEFAULT_TEMPERATURE:
         print(f"temperature: {args.temperature}")
